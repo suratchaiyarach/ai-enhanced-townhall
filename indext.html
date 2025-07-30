@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYG 2025: Smart Factory Revolution</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Poppins:wght@300;400;600;700&family=Noto+Sans+Thai:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #0066ff;
+            --secondary: #00d4ff;
+            --accent: #ff6b35;
+            --success: #00c896;
+            --dark: #0a1628;
+            --gray: #1e2936;
+            --white: #ffffff;
+            --text: #e0e6ed;
+        }
+        
+        body {
+            font-family: 'Poppins', 'Noto Sans Thai', sans-serif;
+            background: var(--dark);
+            color: var(--white);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Background with subtle tech pattern */
+        .tech-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at center, #0a1628 0%, #050a15 100%);
+            z-index: -3;
+        }
+        
+        .pattern-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(0, 102, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+            z-index: -2;
+        }
+        
+        /* Subtle grid */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+        
+        /* Slide container */
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.6s ease-out;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+        
+        .slide-content {
+            max-width: 1200px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Typography */
+        .main-title {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .slide-title {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--white);
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+        
+        .highlight {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        /* Factory challenge cards */
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .challenge-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 35px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .challenge-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--secondary), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .challenge-card:hover::before {
+            left: 100%;
+        }
+        
+        .challenge-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+        
+        .challenge-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+        
+        .challenge-title {
+            font-size: 1.5rem;
+            color: var(--white);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .challenge-desc {
+            color: var(--text);
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        /* Solution boxes */
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .solution-box {
+            background: rgba(0, 102, 255, 0.1);
+            border: 2px solid rgba(0, 102, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .solution-box:hover {
+            background: rgba(0, 102, 255, 0.15);
+            transform: scale(1.05);
+            border-color: var(--secondary);
+        }
+        
+        .solution-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .solution-title {
+            font-size: 1.3rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        /* Timeline visualization */
+        .timeline-container {
+            max-width: 900px;
+            margin: 50px auto;
+            position: relative;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--success));
+            transform: translateY(-50%);
+        }
+        
+        .timeline-item {
+            position: relative;
+            display: inline-block;
+            width: 33.33%;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .timeline-dot {
+            width: 30px;
+            height: 30px;
+            background: var(--dark);
+            border: 4px solid var(--secondary);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .timeline-date {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .timeline-text {
+            font-size: 1rem;
+            color: var(--text);
+        }
+        
+        /* Factory stats */
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin: 50px 0;
+        }
+        
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        /* Navigation */
+        .nav-container {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.3rem;
+            color: var(--white);
+        }
+        
+        .nav-btn:hover {
+            background: var(--secondary);
+            color: var(--dark);
+            transform: scale(1.1);
+        }
+        
+        /* Progress indicators */
+        .progress-dots {
+            position: fixed;
+            bottom: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .dot.active {
+            background: var(--secondary);
+            transform: scale(1.5);
+            box-shadow: 0 0 10px var(--secondary);
+        }
+        
+        /* CTA Button */
+        .cta-btn {
+            display: inline-block;
+            padding: 18px 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .cta-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 102, 255, 0.4);
+        }
+        
+        /* Info hint */
+        .info-hint {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        /* Factory illustration */
+        .factory-visual {
+            margin: 40px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+        }
+        
+        .factory-item {
+            text-align: center;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        
+        .factory-item:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        .factory-item-icon {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .slide-title {
+                font-size: 2rem;
+            }
+            
+            .solution-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .challenge-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                display: block;
+                margin-bottom: 30px;
+            }
+            
+            .stats-row {
+                flex-direction: column;
+            }
+        }
+        
+        /* Quote style */
+        .inspire-quote {
+            font-size: 1.8rem;
+            font-style: italic;
+            color: var(--secondary);
+            margin: 40px auto;
+            max-width: 800px;
+            padding: 30px;
+            border-left: 4px solid var(--secondary);
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background elements -->
+    <div class="tech-bg"></div>
+    <div class="pattern-overlay"></div>
+    <div class="grid-overlay"></div>
+    
+    <!-- Info hint -->
+    <div class="info-hint">
+        💡 Click or use arrows to navigate
+    </div>
+    
+    <!-- Progress dots -->
+    <div class="progress-dots" id="progressDots"></div>
+    
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="nav-btn" id="prevBtn">←</div>
+        <div class="nav-btn" id="nextBtn">→</div>
+    </div>
+    
+    <!-- Presentation container -->
+    <div class="presentation-container">
+        <!-- Slide 1: Opening -->
+        <div class="slide active">
+            <div class="slide-content">
+                <h1 class="main-title">Smart Factory 2025</h1>
+                <p class="subtitle">NYG's Journey to AI-Powered Excellence</p>
+                <div class="factory-visual">
+                    <div class="factory-item">
+                        <div class="factory-item-icon">🏭</div>
+                        <p>Traditional Factory</p>
+                    </div>
+                    <div class="factory-item">
+                        <div class="factory-item-icon">➡️</div>
+                    </div>
+                    <div class="factory-item">
+                        <div class="factory-item-icon">🚀</div>
+                        <p>Smart Factory</p>
+                    </div>
+                </div>
+                <p style="font-size: 1.3rem; color: var(--text); margin-top: 30px;">
+                    One year from now, our workplace will be smarter, faster, and better.
+                    <br>Let's see how.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Current Reality -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">Where We Are Today</h2>
+                <p style="font-size: 1.3rem; margin-bottom: 40px; color: var(--text);">
+                    Every day, we face real challenges in our factories. You know them well.
+                </p>
+                <div class="challenge-grid">
+                    <div class="challenge-card">
+                        <div class="challenge-icon">⏰</div>
+                        <h3 class="challenge-title">Rush Orders</h3>
+                        <p class="challenge-desc">
+                            Brands want new styles in 2 weeks, not 2 months. 
+                            We scramble to meet deadlines.
+                        </p>
+                    </div>
+                    <div class="challenge-card">
+                        <div class="challenge-icon">🔍</div>
+                        <h3 class="challenge-title">Quality Pressure</h3>
+                        <p class="challenge-desc">
+                            One defective batch can lose a client. 
+                            Manual checks miss tiny flaws.
+                        </p>
+                    </div>
+                    <div class="challenge-card">
+                        <div class="challenge-icon">💰</div>
+                        <h3 class="challenge-title">Cost Control</h3>
+                        <p class="challenge-desc">
+                            Material waste, energy bills, overtime costs. 
+                            Every Baht counts.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: What's Coming Next Year -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">Your Factory in 2025</h2>
+                <p style="font-size: 1.3rem; margin-bottom: 40px; color: var(--text);">
+                    Small changes, big impact. Here's what AI can brings to our daily work in the future:
+                </p>
+                <div class="solution-grid">
+                    <div class="solution-box">
+                        <div class="solution-icon">📱</div>
+                        <h3 class="solution-title">Smart Planning</h3>
+                        <p>AI schedules production lines. No more bottlenecks. No more waiting.</p>
+                    </div>
+                    <div class="solution-box">
+                        <div class="solution-icon">👁️</div>
+                        <h3 class="solution-title">Auto Quality Check</h3>
+                        <p>Cameras spot defects instantly. Fix problems before they grow.</p>
+                    </div>
+                    <div class="solution-box">
+                        <div class="solution-icon">📊</div>
+                        <h3 class="solution-title">Live Dashboard</h3>
+                        <p>See production status on any screen. Make decisions with real data. realtime tracking in every single machine</p>
+                    </div>
+                    <div class="solution-box">
+                        <div class="solution-icon">🎯</div>
+                        <h3 class="solution-title">Perfect Cutting</h3>
+                        <p>AI calculates best cut order planing for PRD&Production marker. Save 1% material instantly.</p>
+                    </div>
+                    <div class="solution-box">
+                        <div class="solution-icon">⚡</div>
+                        <h3 class="solution-title">Smart VSM</h3>
+                        <p>AI for auto simulate and analize VSM</p>
+                    </div>
+                    <div class="solution-box">
+                        <div class="solution-icon">📚</div>
+                        <h3 class="solution-title">Digital Training</h3>
+                        <p>Learn new skills on tablets. Practice with AI guides. Master faster.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Implementation Timeline -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">Our 12-Month Journey</h2>
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">Q1 2026</div>
+                        <div class="timeline-text">Start with pilot lines<br>Train first teams</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">Q2 2026</div>
+                        <div class="timeline-text">Expand to 5 factories<br>See first results</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">Q3 2026</div>
+                        <div class="timeline-text">Full deployment<br>Celebrate success</div>
+                    </div>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <div class="stat-number">5%</div>
+                        <div class="stat-label">Faster Production</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">1%</div>
+                        <div class="stat-label">Less Defects</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">2%</div>
+                        <div class="stat-label">Cost Savings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: What It Means for us -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">This Is our Opportunity</h2>
+                <div style="max-width: 900px; margin: 0 auto; text-align: left;">
+                    <div style="margin-bottom: 30px; padding: 25px; background: rgba(0, 212, 255, 0.1); border-radius: 12px;">
+                        <h3 style="color: var(--secondary); margin-bottom: 15px;">🧵 For Sewing Operators</h3>
+                        <p style="font-size: 1.1rem; color: var(--text);">
+                            AI guides help us achieve quality targets easier. Digital assistants show best techniques. 
+                            our skill + AI support = consistent excellence.
+                        </p>
+                    </div>
+                    <div style="margin-bottom: 30px; padding: 25px; background: rgba(0, 102, 255, 0.1); border-radius: 12px;">
+                        <h3 style="color: var(--secondary); margin-bottom: 15px;">📋 For Line Supervisors</h3>
+                        <p style="font-size: 1.1rem; color: var(--text);">
+                            Real-time dashboards show exactly where help is needed. Predict problems before they happen. 
+                            Manage smarter, stress less.
+                        </p>
+                    </div>
+                    <div style="margin-bottom: 30px; padding: 25px; background: rgba(255, 107, 53, 0.1); border-radius: 12px;">
+                        <h3 style="color: var(--secondary); margin-bottom: 15px;">🔧 For Technicians</h3>
+                        <p style="font-size: 1.1rem; color: var(--text);">
+                            AI predicts machine maintenance needs. Fix issues before breakdowns. 
+                            Become the hero who keeps production running.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: Call to Action -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">Let's Build Tomorrow, Together</h2>
+                <div class="inspire-quote">
+                    "The best time to plant a tree was 20 years ago. 
+                    The second best time is now."
+                </div>
+                <p style="font-size: 1.3rem; margin-bottom: 40px; color: var(--text);">
+                    This isn't about replacing anyone. It's about making everyone's work 
+                    <span class="highlight">easier</span>, <span class="highlight">better</span>, and <span class="highlight">more valuable</span>.
+                </p>
+                <a href="#" class="cta-btn">
+                    Khomkrit Hemrit
+                </a>
+                <div style="margin-top: 50px;">
+                    <p style="color: var(--text); font-size: 1.1rem;">Action item Starting next month:</p>
+                    <p style="color: var(--secondary); font-size: 1.2rem; margin-top: 10px;">
+                        ✓ Building the team and AI training for change Agent<br>
+                        ✓ Pilot programs <br>
+                        ✓ our ideas shape our future
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize slides
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        // Create progress dots
+        const dotsContainer = document.getElementById('progressDots');
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(i));
+            dotsContainer.appendChild(dot);
+        }
+        const dots = document.querySelectorAll('.dot');
+        
+        // Navigation functions
+        function updateSlides() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else if (index < currentSlide) {
+                    slide.classList.add('prev');
+                }
+            });
+            
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+        
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlides();
+            }
+        }
+        
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlides();
+            }
+        }
+        
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlides();
+        }
+        
+        // Event listeners
+        document.getElementById('nextBtn').addEventListener('click', nextSlide);
+        document.getElementById('prevBtn').addEventListener('click', prevSlide);
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key >= '1' && e.key <= '9') {
+                const slideIndex = parseInt(e.key) - 1;
+                if (slideIndex < totalSlides) {
+                    goToSlide(slideIndex);
+                }
+            }
+        });
+        
+        // Click to advance
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-btn') && 
+                !e.target.closest('.dot') && 
+                !e.target.closest('a') &&
+                !e.target.closest('.info-hint')) {
+                nextSlide();
+            }
+        });
+        
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                nextSlide();
+            }
+            if (touchEndX > touchStartX + 50) {
+                prevSlide();
+            }
+        }
+        
+        // Prevent text selection
+        document.addEventListener('selectstart', (e) => {
+            if (!e.target.closest('input') && !e.target.closest('textarea')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
