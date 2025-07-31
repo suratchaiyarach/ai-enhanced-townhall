@@ -30,18 +30,56 @@
             color: var(--white);
             overflow: hidden;
             position: relative;
+            user-select: none;
         }
         
-        /* Background with subtle tech pattern */
+        /* Animated background */
         .tech-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                radial-gradient(ellipse at center, #0a1628 0%, #050a15 100%);
+            background: radial-gradient(ellipse at center, #0a1628 0%, #050a15 100%);
             z-index: -3;
+        }
+        
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--secondary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 10s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
         }
         
         .pattern-overlay {
@@ -54,9 +92,14 @@
                 radial-gradient(circle at 25% 25%, rgba(0, 102, 255, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 75% 75%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
             z-index: -2;
+            animation: patternMove 20s ease-in-out infinite;
         }
         
-        /* Subtle grid */
+        @keyframes patternMove {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-20px, -20px) scale(1.1); }
+        }
+        
         .grid-overlay {
             position: fixed;
             top: 0;
@@ -68,9 +111,15 @@
                 linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
             background-size: 50px 50px;
             z-index: -1;
+            animation: gridMove 30s linear infinite;
         }
         
-        /* Slide container */
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        /* Slide container with improved transitions */
         .presentation-container {
             width: 100vw;
             height: 100vh;
@@ -88,64 +137,100 @@
             align-items: center;
             justify-content: center;
             opacity: 0;
-            transform: translateX(100%);
-            transition: all 0.6s ease-out;
+            transform: translateX(100%) scale(0.95);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         
         .slide.active {
             opacity: 1;
-            transform: translateX(0);
+            transform: translateX(0) scale(1);
         }
         
         .slide.prev {
-            transform: translateX(-100%);
+            transform: translateX(-100%) scale(0.95);
         }
         
         .slide-content {
             max-width: 1200px;
-            padding: 40px;
+            padding: clamp(20px, 5vw, 40px);
             text-align: center;
             position: relative;
             z-index: 10;
         }
         
-        /* Typography */
+        /* Enhanced typography with animations */
         .main-title {
             font-family: 'Inter', sans-serif;
-            font-size: clamp(3rem, 8vw, 6rem);
+            font-size: clamp(2.5rem, 8vw, 6rem);
             font-weight: 900;
             line-height: 1.1;
             margin-bottom: 30px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.3)); }
+            50% { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6)); }
         }
         
         .slide-title {
             font-family: 'Inter', sans-serif;
-            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
             font-weight: 700;
             margin-bottom: 30px;
             color: var(--white);
+            animation: slideInUp 0.8s ease-out;
         }
         
         .subtitle {
-            font-size: 1.5rem;
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
             color: var(--secondary);
             margin-bottom: 40px;
             font-weight: 300;
+            animation: slideInUp 0.8s ease-out 0.2s both;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .highlight {
             color: var(--secondary);
             font-weight: 600;
+            position: relative;
+            display: inline-block;
         }
         
-        /* Factory challenge cards */
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            animation: highlightGrow 0.8s ease-out 0.5s forwards;
+        }
+        
+        @keyframes highlightGrow {
+            to { width: 100%; }
+        }
+        
+        /* Enhanced challenge cards with stagger animation */
         .challenge-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(min(350px, 100%), 1fr));
+            gap: clamp(20px, 3vw, 30px);
             margin-top: 50px;
         }
         
@@ -153,10 +238,32 @@
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
-            padding: 35px;
-            transition: all 0.3s ease;
+            padding: clamp(25px, 4vw, 35px);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             position: relative;
             overflow: hidden;
+            opacity: 1;
+            transform: translateY(0);
+            cursor: pointer;
+        }
+        
+        .slide.active .challenge-card {
+            animation: cardSlideIn 0.8s ease-out;
+        }
+        
+        .slide.active .challenge-card:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .challenge-card:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .challenge-card:nth-child(3) { animation-delay: 0.3s; }
+        
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .challenge-card::before {
@@ -167,33 +274,59 @@
             width: 100%;
             height: 2px;
             background: linear-gradient(90deg, transparent, var(--secondary), transparent);
-            transition: left 0.5s ease;
+            transition: left 0.6s ease;
+        }
+        
+        .challenge-card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.1), transparent);
+            transition: all 0.6s ease;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
         }
         
         .challenge-card:hover::before {
             left: 100%;
         }
         
+        .challenge-card:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+        
         .challenge-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px) scale(1.02);
             border-color: var(--secondary);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3);
         }
         
         .challenge-icon {
-            width: 80px;
-            height: 80px;
+            width: clamp(60px, 10vw, 80px);
+            height: clamp(60px, 10vw, 80px);
             margin: 0 auto 20px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            animation: iconPulse 2s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
+        }
+        
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
         
         .challenge-title {
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
             color: var(--white);
             margin-bottom: 15px;
             font-weight: 600;
@@ -202,44 +335,79 @@
         .challenge-desc {
             color: var(--text);
             line-height: 1.6;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
         }
         
-        /* Solution boxes */
+        /* Enhanced solution grid with better mobile layout */
         .solution-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+            gap: clamp(15px, 3vw, 30px);
             margin-top: 50px;
         }
         
         .solution-box {
-            background: rgba(0, 102, 255, 0.1);
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.1), rgba(0, 102, 255, 0.05));
             border: 2px solid rgba(0, 102, 255, 0.3);
             border-radius: 12px;
-            padding: 30px;
-            transition: all 0.3s ease;
+            padding: clamp(20px, 4vw, 30px);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 1;
+            transform: scale(1) rotateY(0deg);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide.active .solution-box {
+            animation: solutionReveal 0.8s ease-out;
+        }
+        
+        .slide.active .solution-box:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .solution-box:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .solution-box:nth-child(3) { animation-delay: 0.3s; }
+        .slide.active .solution-box:nth-child(4) { animation-delay: 0.4s; }
+        .slide.active .solution-box:nth-child(5) { animation-delay: 0.5s; }
+        .slide.active .solution-box:nth-child(6) { animation-delay: 0.6s; }
+        
+        @keyframes solutionReveal {
+            from {
+                opacity: 0;
+                transform: scale(0.8) rotateY(20deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotateY(0deg);
+            }
         }
         
         .solution-box:hover {
-            background: rgba(0, 102, 255, 0.15);
-            transform: scale(1.05);
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.2), rgba(0, 102, 255, 0.1));
+            transform: scale(1.05) translateY(-5px);
             border-color: var(--secondary);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
         }
         
         .solution-icon {
-            font-size: 3rem;
+            font-size: clamp(2rem, 5vw, 3rem);
             margin-bottom: 15px;
+            display: block;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
         
         .solution-title {
-            font-size: 1.3rem;
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
             color: var(--secondary);
             margin-bottom: 10px;
             font-weight: 600;
         }
         
-        /* Timeline visualization */
+        /* Interactive timeline */
         .timeline-container {
             max-width: 900px;
             margin: 50px auto;
@@ -254,6 +422,12 @@
             height: 4px;
             background: linear-gradient(90deg, var(--primary), var(--secondary), var(--success));
             transform: translateY(-50%);
+            animation: timelineGrow 2s ease-out;
+        }
+        
+        @keyframes timelineGrow {
+            from { width: 0; }
+            to { width: 100%; }
         }
         
         .timeline-item {
@@ -262,6 +436,27 @@
             width: 33.33%;
             text-align: center;
             padding: 20px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide.active .timeline-item {
+            animation: timelineItemAppear 0.8s ease-out;
+        }
+        
+        .slide.active .timeline-item:nth-child(1) { animation-delay: 0.5s; }
+        .slide.active .timeline-item:nth-child(2) { animation-delay: 0.7s; }
+        .slide.active .timeline-item:nth-child(3) { animation-delay: 0.9s; }
+        
+        @keyframes timelineItemAppear {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .timeline-dot {
@@ -273,47 +468,69 @@
             margin: 0 auto 20px;
             position: relative;
             z-index: 2;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .timeline-dot:hover {
+            transform: scale(1.3);
+            box-shadow: 0 0 20px var(--secondary);
         }
         
         .timeline-date {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
             color: var(--secondary);
             font-weight: 600;
             margin-bottom: 10px;
         }
         
         .timeline-text {
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2vw, 1rem);
             color: var(--text);
         }
         
-        /* Factory stats */
+        /* Animated statistics */
         .stats-row {
             display: flex;
             justify-content: space-around;
             margin: 50px 0;
+            flex-wrap: wrap;
+            gap: 20px;
         }
         
         .stat-box {
             text-align: center;
             padding: 20px;
+            flex: 1;
+            min-width: 120px;
         }
         
         .stat-number {
-            font-size: 3.5rem;
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
             font-weight: 900;
             color: var(--secondary);
             margin-bottom: 10px;
+            counter-reset: number;
+            position: relative;
+        }
+        
+        .stat-number.animate {
+            animation: countUp 2s ease-out;
+        }
+        
+        @keyframes countUp {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
         
         .stat-label {
-            font-size: 1.1rem;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
             color: var(--text);
             text-transform: uppercase;
             letter-spacing: 0.1em;
         }
         
-        /* Navigation */
+        /* Enhanced navigation */
         .nav-container {
             position: fixed;
             bottom: 40px;
@@ -325,27 +542,53 @@
         }
         
         .nav-btn {
-            width: 50px;
-            height: 50px;
+            width: clamp(45px, 8vw, 50px);
+            height: clamp(45px, 8vw, 50px);
             background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             border: 2px solid var(--secondary);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.3rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
             color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: var(--secondary);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+        
+        .nav-btn:hover::before {
+            width: 100px;
+            height: 100px;
         }
         
         .nav-btn:hover {
-            background: var(--secondary);
             color: var(--dark);
             transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
         }
         
-        /* Progress indicators */
+        .nav-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Enhanced progress dots */
         .progress-dots {
             position: fixed;
             bottom: 110px;
@@ -361,30 +604,56 @@
             height: 10px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             cursor: pointer;
+            position: relative;
+        }
+        
+        .dot::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: var(--secondary);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .dot:hover::before {
+            width: 20px;
+            height: 20px;
         }
         
         .dot.active {
             background: var(--secondary);
             transform: scale(1.5);
-            box-shadow: 0 0 10px var(--secondary);
+            box-shadow: 0 0 15px var(--secondary);
         }
         
-        /* CTA Button */
+        .dot.active::before {
+            width: 30px;
+            height: 30px;
+            opacity: 0.3;
+        }
+        
+        /* Enhanced CTA Button */
         .cta-btn {
             display: inline-block;
-            padding: 18px 50px;
+            padding: clamp(15px, 3vw, 18px) clamp(40px, 8vw, 50px);
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: var(--white);
             text-decoration: none;
             border-radius: 50px;
             font-weight: 600;
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
             transition: all 0.3s ease;
             margin-top: 30px;
             position: relative;
             overflow: hidden;
+            z-index: 1;
         }
         
         .cta-btn::before {
@@ -398,6 +667,7 @@
             border-radius: 50%;
             transform: translate(-50%, -50%);
             transition: width 0.6s, height 0.6s;
+            z-index: -1;
         }
         
         .cta-btn:hover::before {
@@ -406,65 +676,127 @@
         }
         
         .cta-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 102, 255, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 102, 255, 0.4);
         }
         
-        /* Info hint */
+        .cta-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        /* Enhanced info hint */
         .info-hint {
             position: fixed;
             top: 20px;
             right: 20px;
             background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 12px 20px;
             border-radius: 30px;
-            font-size: 0.9rem;
-            opacity: 0.7;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            animation: hintPulse 3s ease-in-out infinite;
         }
         
-        /* Factory illustration */
+        @keyframes hintPulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        .info-hint:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        
+        /* Enhanced factory visual */
         .factory-visual {
             margin: 40px 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 40px;
+            gap: clamp(20px, 5vw, 40px);
+            flex-wrap: wrap;
         }
         
         .factory-item {
             text-align: center;
-            opacity: 0.7;
-            transition: all 0.3s ease;
+            opacity: 0.8;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+        
+        .slide.active .factory-item {
+            animation: factoryItemAppear 1s ease-out;
+        }
+        
+        .slide.active .factory-item:nth-child(1) { animation-delay: 0.2s; }
+        .slide.active .factory-item:nth-child(2) { animation-delay: 0.4s; }
+        .slide.active .factory-item:nth-child(3) { animation-delay: 0.6s; }
+        
+        @keyframes factoryItemAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 0.8;
+                transform: scale(1);
+            }
         }
         
         .factory-item:hover {
             opacity: 1;
-            transform: scale(1.1);
+            transform: scale(1.1) rotate(5deg);
         }
         
         .factory-item-icon {
-            font-size: 4rem;
+            font-size: clamp(3rem, 6vw, 4rem);
             margin-bottom: 10px;
+            animation: factoryIconBounce 2s ease-in-out infinite;
         }
         
-        /* Responsive */
+        @keyframes factoryIconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Quote enhancement */
+        .inspire-quote {
+            font-size: clamp(1.3rem, 3vw, 1.8rem);
+            font-style: italic;
+            color: var(--secondary);
+            margin: 40px auto;
+            max-width: 800px;
+            padding: clamp(20px, 4vw, 30px);
+            border-left: 4px solid var(--secondary);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 212, 255, 0.02));
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .inspire-quote::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-size: 4rem;
+            color: var(--secondary);
+            opacity: 0.3;
+        }
+        
+        /* Mobile optimizations */
         @media (max-width: 768px) {
-            .main-title {
-                font-size: 2.5rem;
+            .slide-content {
+                padding: 20px;
             }
             
-            .slide-title {
-                font-size: 2rem;
-            }
-            
+            .challenge-grid,
             .solution-grid {
                 grid-template-columns: 1fr;
                 gap: 20px;
-            }
-            
-            .challenge-grid {
-                grid-template-columns: 1fr;
             }
             
             .timeline-item {
@@ -473,34 +805,73 @@
                 margin-bottom: 30px;
             }
             
+            .timeline-line {
+                display: none;
+            }
+            
             .stats-row {
                 flex-direction: column;
+                gap: 30px;
+            }
+            
+            .factory-visual {
+                flex-direction: column;
+            }
+            
+            .nav-container {
+                bottom: 20px;
+                gap: 15px;
+            }
+            
+            .progress-dots {
+                bottom: 80px;
             }
         }
         
-        /* Quote style */
-        .inspire-quote {
-            font-size: 1.8rem;
-            font-style: italic;
-            color: var(--secondary);
-            margin: 40px auto;
-            max-width: 800px;
-            padding: 30px;
-            border-left: 4px solid var(--secondary);
-            background: rgba(0, 212, 255, 0.05);
-            border-radius: 8px;
+        @media (max-width: 480px) {
+            .info-hint {
+                top: 10px;
+                right: 10px;
+                padding: 8px 15px;
+            }
+            
+            .challenge-card,
+            .solution-box {
+                padding: 20px;
+            }
+        }
+        
+        /* Loading animation */
+        .loading {
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        /* Interactive elements pulse */
+        .interactive-pulse {
+            animation: interactivePulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes interactivePulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.6); }
         }
     </style>
 </head>
-<body>
+<body class="loading">
     <!-- Background elements -->
     <div class="tech-bg"></div>
     <div class="pattern-overlay"></div>
     <div class="grid-overlay"></div>
+    <div class="particles" id="particles"></div>
     
     <!-- Info hint -->
     <div class="info-hint">
-        💡 Click or use arrows to navigate
+        💡 Tap/Click or swipe to navigate
     </div>
     
     <!-- Progress dots -->
@@ -532,7 +903,7 @@
                         <p>Smart Factory</p>
                     </div>
                 </div>
-                <p style="font-size: 1.3rem; color: var(--text); margin-top: 30px;">
+                <p style="font-size: clamp(1.1rem, 2.5vw, 1.3rem); color: var(--text); margin-top: 30px;">
                     One year from now, our workplace will be smarter, faster, and better.
                     <br>Let's see how.
                 </p>
@@ -543,11 +914,11 @@
         <div class="slide">
             <div class="slide-content">
                 <h2 class="slide-title">Where We Are Today</h2>
-                <p style="font-size: 1.3rem; margin-bottom: 40px; color: var(--text);">
+                <p style="font-size: clamp(1.1rem, 2.5vw, 1.3rem); margin-bottom: 40px; color: var(--text);">
                     Every day, we face real challenges in our factories. You know them well.
                 </p>
                 <div class="challenge-grid">
-                    <div class="challenge-card">
+                    <div class="challenge-card interactive-pulse">
                         <div class="challenge-icon">⏰</div>
                         <h3 class="challenge-title">Rush Orders</h3>
                         <p class="challenge-desc">
@@ -555,7 +926,7 @@
                             We scramble to meet deadlines.
                         </p>
                     </div>
-                    <div class="challenge-card">
+                    <div class="challenge-card interactive-pulse">
                         <div class="challenge-icon">🔍</div>
                         <h3 class="challenge-title">Quality Pressure</h3>
                         <p class="challenge-desc">
@@ -563,7 +934,7 @@
                             Manual checks miss tiny flaws.
                         </p>
                     </div>
-                    <div class="challenge-card">
+                    <div class="challenge-card interactive-pulse">
                         <div class="challenge-icon">💰</div>
                         <h3 class="challenge-title">Cost Control</h3>
                         <p class="challenge-desc">
@@ -579,8 +950,8 @@
         <div class="slide">
             <div class="slide-content">
                 <h2 class="slide-title">Our Factory in 2026</h2>
-                <p style="font-size: 1.3rem; margin-bottom: 40px; color: var(--text);">
-                    Small changes, big impact. Here's what AI can brings to our daily work in the future:
+                <p style="font-size: clamp(1.1rem, 2.5vw, 1.3rem); margin-bottom: 40px; color: var(--text);">
+                    Small changes, big impact. Here's what AI brings to our daily work:
                 </p>
                 <div class="solution-grid">
                     <div class="solution-box">
@@ -596,17 +967,17 @@
                     <div class="solution-box">
                         <div class="solution-icon">📊</div>
                         <h3 class="solution-title">Live Dashboard</h3>
-                        <p>See production status on any screen. Make decisions with real data. realtime tracking in every single machine</p>
+                        <p>See production status on any screen. Make decisions with real data.</p>
                     </div>
                     <div class="solution-box">
                         <div class="solution-icon">🎯</div>
                         <h3 class="solution-title">Perfect Cutting</h3>
-                        <p>AI calculates best cut order planing for PRD&Production marker. Save 1% material instantly.</p>
+                        <p>AI calculates best cut order planning. Save 1% material instantly.</p>
                     </div>
                     <div class="solution-box">
                         <div class="solution-icon">⚡</div>
                         <h3 class="solution-title">Smart VSM</h3>
-                        <p>AI for auto simulate and analize VSM to eliminate non-value added</p>
+                        <p>AI auto-simulates and analyzes VSM to eliminate non-value added.</p>
                     </div>
                     <div class="solution-box">
                         <div class="solution-icon">📚</div>
@@ -626,7 +997,7 @@
                     <div class="timeline-item">
                         <div class="timeline-dot"></div>
                         <div class="timeline-date">Q3 2025</div>
-                        <div class="timeline-text">Start with select change agent and pilot<br>Train first teams</div>
+                        <div class="timeline-text">Start with select change agents and pilot<br>Train first teams</div>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-dot"></div>
@@ -641,16 +1012,16 @@
                 </div>
                 <div class="stats-row">
                     <div class="stat-box">
-                        <div class="stat-number">2%</div>
-                        <div class="stat-label">Faster Production</div>
+                        <div class="stat-number animate" data-target="2">0</div>
+                        <div class="stat-label">% Faster Production</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-number">2%</div>
-                        <div class="stat-label">Less Defects</div>
+                        <div class="stat-number animate" data-target="2">0</div>
+                        <div class="stat-label">% Less Defects</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-number">1%</div>
-                        <div class="stat-label">Fabric Cost Savings</div>
+                        <div class="stat-number animate" data-target="1">0</div>
+                        <div class="stat-label">% Fabric Cost Savings</div>
                     </div>
                 </div>
             </div>
@@ -659,26 +1030,26 @@
         <!-- Slide 5: What It Means for us -->
         <div class="slide">
             <div class="slide-content">
-                <h2 class="slide-title">This Is our Opportunity</h2>
+                <h2 class="slide-title">This Is Our Opportunity</h2>
                 <div style="max-width: 900px; margin: 0 auto; text-align: left;">
-                    <div style="margin-bottom: 30px; padding: 25px; background: rgba(0, 212, 255, 0.1); border-radius: 12px;">
-                        <h3 style="color: var(--secondary); margin-bottom: 15px;">🧵 For Sewing Operators</h3>
-                        <p style="font-size: 1.1rem; color: var(--text);">
-                            AI guides help us achieve quality targets easier. Digital assistants analize ergonomics. 
+                    <div style="margin-bottom: 30px; padding: clamp(20px, 4vw, 25px); background: rgba(0, 212, 255, 0.1); border-radius: 12px; transition: all 0.3s ease;" class="interactive-pulse">
+                        <h3 style="color: var(--secondary); margin-bottom: 15px; font-size: clamp(1.1rem, 2.5vw, 1.3rem);">🧵 For Sewing Operators</h3>
+                        <p style="font-size: clamp(1rem, 2vw, 1.1rem); color: var(--text);">
+                            AI guides help us achieve quality targets easier. Digital assistants analyze ergonomics. 
                             Kaizen copilot + AI support = consistent excellence.
                         </p>
                     </div>
-                    <div style="margin-bottom: 30px; padding: 25px; background: rgba(0, 102, 255, 0.1); border-radius: 12px;">
-                        <h3 style="color: var(--secondary); margin-bottom: 15px;">📋 For Line Supervisors</h3>
-                        <p style="font-size: 1.1rem; color: var(--text);">
+                    <div style="margin-bottom: 30px; padding: clamp(20px, 4vw, 25px); background: rgba(0, 102, 255, 0.1); border-radius: 12px; transition: all 0.3s ease;" class="interactive-pulse">
+                        <h3 style="color: var(--secondary); margin-bottom: 15px; font-size: clamp(1.1rem, 2.5vw, 1.3rem);">📋 For Line Supervisors</h3>
+                        <p style="font-size: clamp(1rem, 2vw, 1.1rem); color: var(--text);">
                             Real-time dashboards show exactly where help is needed. Predict problems before they happen. 
                             Manage smarter, stress less.
                         </p>
                     </div>
-                    <div style="margin-bottom: 30px; padding: 25px; background: rgba(255, 107, 53, 0.1); border-radius: 12px;">
-                        <h3 style="color: var(--secondary); margin-bottom: 15px;">🔧 For PRD and sourcing</h3>
-                        <p style="font-size: 1.1rem; color: var(--text);">
-                            Implement a AI strategy to drastically cut fabric consumption by using intelligent nesting software
+                    <div style="margin-bottom: 30px; padding: clamp(20px, 4vw, 25px); background: rgba(255, 107, 53, 0.1); border-radius: 12px; transition: all 0.3s ease;" class="interactive-pulse">
+                        <h3 style="color: var(--secondary); margin-bottom: 15px; font-size: clamp(1.1rem, 2.5vw, 1.3rem);">🔧 For PRD and Sourcing</h3>
+                        <p style="font-size: clamp(1rem, 2vw, 1.1rem); color: var(--text);">
+                            Implement AI strategy to drastically cut fabric consumption using intelligent nesting software
                             for hyper-efficient cutting layouts that minimize scrap.
                         </p>
                     </div>
@@ -694,7 +1065,7 @@
                     "The best time to plant a tree was 20 years ago. 
                     The second best time is now."
                 </div>
-                <p style="font-size: 1.3rem; margin-bottom: 40px; color: var(--text);">
+                <p style="font-size: clamp(1.1rem, 2.5vw, 1.3rem); margin-bottom: 40px; color: var(--text);">
                     This isn't about replacing anyone. It's about making everyone's work 
                     <span class="highlight">easier</span>, <span class="highlight">better</span>, and <span class="highlight">more valuable</span>.
                 </p>
@@ -702,11 +1073,11 @@
                     Khomkrit Hemrit
                 </a>
                 <div style="margin-top: 50px;">
-                    <p style="color: var(--text); font-size: 1.1rem;">Action item Starting next month:</p>
-                    <p style="color: var(--secondary); font-size: 1.2rem; margin-top: 10px;">
-                        ✓ Building the team and AI training for change Agent<br>
-                        ✓ Pilot programs <br>
-                        ✓ our ideas shape our future
+                    <p style="color: var(--text); font-size: clamp(1rem, 2vw, 1.1rem);">Action items starting next month:</p>
+                    <p style="color: var(--secondary); font-size: clamp(1.1rem, 2.5vw, 1.2rem); margin-top: 10px;">
+                        ✓ Building the team and AI training for change agents<br>
+                        ✓ Pilot programs<br>
+                        ✓ Our ideas shape our future
                     </p>
                 </div>
             </div>
@@ -714,33 +1085,77 @@
     </div>
     
     <script>
-        // Initialize slides
+        // Initialize presentation
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
         
-        // Create progress dots
-        const dotsContainer = document.getElementById('progressDots');
-        for (let i = 0; i < totalSlides; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'dot';
-            if (i === 0) dot.classList.add('active');
-            dot.addEventListener('click', () => goToSlide(i));
-            dotsContainer.appendChild(dot);
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = window.innerWidth < 768 ? 15 : 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
         }
-        const dots = document.querySelectorAll('.dot');
         
-        // Navigation functions
+        // Create progress dots
+        function createProgressDots() {
+            const dotsContainer = document.getElementById('progressDots');
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(i));
+                dotsContainer.appendChild(dot);
+            }
+        }
+        
+        // Animate statistics counter
+        function animateStats() {
+            const statNumbers = document.querySelectorAll('.stat-number[data-target]');
+            statNumbers.forEach(stat => {
+                const target = parseInt(stat.getAttribute('data-target'));
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    stat.textContent = Math.floor(current);
+                }, 16);
+            });
+        }
+        
+        // Slide navigation functions
         function updateSlides() {
             slides.forEach((slide, index) => {
                 slide.classList.remove('active', 'prev');
                 if (index === currentSlide) {
                     slide.classList.add('active');
+                    // Trigger animations for current slide
+                    setTimeout(() => {
+                        if (index === 3) { // Timeline slide
+                            animateStats();
+                        }
+                    }, 800);
                 } else if (index < currentSlide) {
                     slide.classList.add('prev');
                 }
             });
             
+            // Update progress dots
+            const dots = document.querySelectorAll('.dot');
             dots.forEach((dot, index) => {
                 dot.classList.toggle('active', index === currentSlide);
             });
@@ -750,6 +1165,7 @@
             if (currentSlide < totalSlides - 1) {
                 currentSlide++;
                 updateSlides();
+                vibrateOnMobile();
             }
         }
         
@@ -757,70 +1173,197 @@
             if (currentSlide > 0) {
                 currentSlide--;
                 updateSlides();
+                vibrateOnMobile();
             }
         }
         
         function goToSlide(index) {
             currentSlide = index;
             updateSlides();
+            vibrateOnMobile();
+        }
+        
+        // Haptic feedback for mobile
+        function vibrateOnMobile() {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(50);
+            }
         }
         
         // Event listeners
         document.getElementById('nextBtn').addEventListener('click', nextSlide);
         document.getElementById('prevBtn').addEventListener('click', prevSlide);
         
-        // Keyboard navigation
+        // Enhanced keyboard navigation
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === ' ') {
-                nextSlide();
-            } else if (e.key === 'ArrowLeft') {
-                prevSlide();
-            } else if (e.key >= '1' && e.key <= '9') {
-                const slideIndex = parseInt(e.key) - 1;
-                if (slideIndex < totalSlides) {
-                    goToSlide(slideIndex);
-                }
+            switch(e.key) {
+                case 'ArrowRight':
+                case ' ':
+                    e.preventDefault();
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    prevSlide();
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    goToSlide(0);
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    goToSlide(totalSlides - 1);
+                    break;
+                default:
+                    if (e.key >= '1' && e.key <= '9') {
+                        const slideIndex = parseInt(e.key) - 1;
+                        if (slideIndex < totalSlides) {
+                            goToSlide(slideIndex);
+                        }
+                    }
             }
         });
         
-        // Click to advance
+        // Enhanced click navigation
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.nav-btn') && 
                 !e.target.closest('.dot') && 
                 !e.target.closest('a') &&
-                !e.target.closest('.info-hint')) {
-                nextSlide();
+                !e.target.closest('.info-hint') &&
+                !e.target.closest('.challenge-card') &&
+                !e.target.closest('.solution-box') &&
+                !e.target.closest('.timeline-dot')) {
+                
+                const rect = e.target.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const width = rect.width;
+                
+                if (clickX > width / 2) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
             }
         });
         
-        // Touch/swipe support
+        // Enhanced touch/swipe support
         let touchStartX = 0;
         let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+        let isSwiping = false;
         
         document.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
-        });
+            touchStartY = e.changedTouches[0].screenY;
+            isSwiping = true;
+        }, { passive: true });
+        
+        document.addEventListener('touchmove', (e) => {
+            if (!isSwiping) return;
+            
+            const currentX = e.changedTouches[0].screenX;
+            const currentY = e.changedTouches[0].screenY;
+            const deltaX = Math.abs(currentX - touchStartX);
+            const deltaY = Math.abs(currentY - touchStartY);
+            
+            // If vertical movement is greater, allow scrolling
+            if (deltaY > deltaX) {
+                isSwiping = false;
+            } else if (deltaX > 10) {
+                e.preventDefault();
+            }
+        }, { passive: false });
         
         document.addEventListener('touchend', (e) => {
+            if (!isSwiping) return;
+            
             touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
             handleSwipe();
-        });
+            isSwiping = false;
+        }, { passive: true });
         
         function handleSwipe() {
-            if (touchEndX < touchStartX - 50) {
-                nextSlide();
-            }
-            if (touchEndX > touchStartX + 50) {
-                prevSlide();
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = Math.abs(touchEndY - touchStartY);
+            const minSwipeDistance = 50;
+            
+            // Only process horizontal swipes
+            if (Math.abs(deltaX) > minSwipeDistance && Math.abs(deltaX) > deltaY) {
+                if (deltaX < 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
             }
         }
         
-        // Prevent text selection
+        // Interactive card effects
+        function addInteractiveEffects() {
+            const cards = document.querySelectorAll('.challenge-card, .solution-box');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = '';
+                });
+                
+                card.addEventListener('click', () => {
+                    card.style.transform = 'translateY(-5px) scale(0.98)';
+                    setTimeout(() => {
+                        card.style.transform = 'translateY(-10px) scale(1.02)';
+                    }, 100);
+                });
+            });
+        }
+        
+        // Timeline dot interactions
+        function addTimelineInteractions() {
+            const timelineDots = document.querySelectorAll('.timeline-dot');
+            timelineDots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    dot.style.transform = 'scale(1.5)';
+                    dot.style.boxShadow = '0 0 30px var(--secondary)';
+                    setTimeout(() => {
+                        dot.style.transform = '';
+                        dot.style.boxShadow = '';
+                    }, 300);
+                });
+            });
+        }
+        
+        // Resize handler for responsive particles
+        window.addEventListener('resize', () => {
+            const particlesContainer = document.getElementById('particles');
+            particlesContainer.innerHTML = '';
+            createParticles();
+        });
+        
+        // Prevent text selection during presentation
         document.addEventListener('selectstart', (e) => {
             if (!e.target.closest('input') && !e.target.closest('textarea')) {
                 e.preventDefault();
             }
         });
+        
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            createProgressDots();
+            addInteractiveEffects();
+            addTimelineInteractions();
+            
+            // Add loading animation
+            document.body.classList.add('loading');
+        });
+        
+        // Performance optimization: Reduce animations on low-end devices
+        if (navigator.hardwareConcurrency < 4) {
+            document.documentElement.style.setProperty('--reduced-motion', '1');
+        }
     </script>
 </body>
 </html>
