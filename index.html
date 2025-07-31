@@ -33,6 +33,49 @@
             user-select: none;
         }
         
+        /* Custom scrollbar styling */
+        .slide::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .slide::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        .slide::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+        }
+        
+        .slide::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+        }
+        
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 160px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--secondary);
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 50;
+        }
+        
+        .scroll-indicator.show {
+            opacity: 0.7;
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes scrollPulse {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-5px); }
+        }
+        
         /* Animated background */
         .tech-bg {
             position: fixed;
@@ -134,11 +177,13 @@
             top: 0;
             left: 0;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             opacity: 0;
             transform: translateX(100%) scale(0.95);
             transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow-y: auto;
+            overflow-x: hidden;
         }
         
         .slide.active {
@@ -152,10 +197,17 @@
         
         .slide-content {
             max-width: 1200px;
+            width: 100%;
             padding: clamp(20px, 5vw, 40px);
+            padding-top: clamp(40px, 8vh, 80px);
+            padding-bottom: clamp(120px, 15vh, 150px);
             text-align: center;
             position: relative;
             z-index: 10;
+            min-height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         /* Enhanced typography with animations */
@@ -229,9 +281,32 @@
         /* Enhanced challenge cards with stagger animation */
         .challenge-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(350px, 100%), 1fr));
-            gap: clamp(20px, 3vw, 30px);
-            margin-top: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+            gap: clamp(20px, 3vw, 25px);
+            margin: 40px auto;
+            max-width: 1000px;
+            justify-items: center;
+        }
+        
+        /* Challenge grid responsive behavior */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .challenge-grid {
+                grid-template-columns: repeat(2, minmax(300px, 1fr));
+                max-width: 650px;
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            .challenge-grid {
+                grid-template-columns: repeat(3, minmax(300px, 1fr));
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .challenge-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
         }
         
         .challenge-card {
@@ -341,22 +416,55 @@
         /* Enhanced solution grid with better mobile layout */
         .solution-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
-            gap: clamp(15px, 3vw, 30px);
-            margin-top: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+            gap: clamp(15px, 3vw, 25px);
+            margin: 40px auto;
+            max-width: 1200px;
+            justify-items: center;
+        }
+        
+        /* Ensure proper grid behavior on different screen sizes */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .solution-grid {
+                grid-template-columns: repeat(2, minmax(280px, 1fr));
+                max-width: 600px;
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            .solution-grid {
+                grid-template-columns: repeat(3, minmax(320px, 1fr));
+                max-width: 1000px;
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .solution-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                gap: 20px;
+            }
         }
         
         .solution-box {
             background: linear-gradient(135deg, rgba(0, 102, 255, 0.1), rgba(0, 102, 255, 0.05));
             border: 2px solid rgba(0, 102, 255, 0.3);
             border-radius: 12px;
-            padding: clamp(20px, 4vw, 30px);
+            padding: clamp(20px, 4vw, 25px);
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             opacity: 1;
             transform: scale(1) rotateY(0deg);
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            width: 100%;
+            max-width: 350px;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            text-align: center;
         }
         
         .slide.active .solution-box {
@@ -877,6 +985,9 @@
     <!-- Progress dots -->
     <div class="progress-dots" id="progressDots"></div>
     
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator" id="scrollIndicator">↓ Scroll to see more ↓</div>
+    
     <!-- Navigation -->
     <div class="nav-container">
         <div class="nav-btn" id="prevBtn">←</div>
@@ -1143,6 +1254,11 @@
                 slide.classList.remove('active', 'prev');
                 if (index === currentSlide) {
                     slide.classList.add('active');
+                    // Reset scroll position when entering a slide
+                    setTimeout(() => {
+                        slide.scrollTop = 0;
+                        checkScrollIndicator(slide);
+                    }, 100);
                     // Trigger animations for current slide
                     setTimeout(() => {
                         if (index === 3) { // Timeline slide
@@ -1158,6 +1274,30 @@
             const dots = document.querySelectorAll('.dot');
             dots.forEach((dot, index) => {
                 dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+        
+        // Check if slide content overflows and show scroll indicator
+        function checkScrollIndicator(slide) {
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            const isScrollable = slide.scrollHeight > slide.clientHeight;
+            const isAtBottom = slide.scrollTop + slide.clientHeight >= slide.scrollHeight - 10;
+            
+            if (isScrollable && !isAtBottom) {
+                scrollIndicator.classList.add('show');
+            } else {
+                scrollIndicator.classList.remove('show');
+            }
+        }
+        
+        // Add scroll listeners to all slides
+        function addScrollListeners() {
+            slides.forEach(slide => {
+                slide.addEventListener('scroll', () => {
+                    if (slide.classList.contains('active')) {
+                        checkScrollIndicator(slide);
+                    }
+                });
             });
         }
         
@@ -1224,8 +1364,9 @@
             }
         });
         
-        // Enhanced click navigation
+        // Enhanced click navigation - respects scroll state
         document.addEventListener('click', (e) => {
+            // Don't navigate if clicking on interactive elements
             if (!e.target.closest('.nav-btn') && 
                 !e.target.closest('.dot') && 
                 !e.target.closest('a') &&
@@ -1234,29 +1375,38 @@
                 !e.target.closest('.solution-box') &&
                 !e.target.closest('.timeline-dot')) {
                 
-                const rect = e.target.getBoundingClientRect();
-                const clickX = e.clientX - rect.left;
-                const width = rect.width;
+                const activeSlide = document.querySelector('.slide.active');
+                const isScrollable = activeSlide.scrollHeight > activeSlide.clientHeight;
+                const isAtBottom = activeSlide.scrollTop + activeSlide.clientHeight >= activeSlide.scrollHeight - 10;
+                const isAtTop = activeSlide.scrollTop <= 10;
                 
-                if (clickX > width / 2) {
-                    nextSlide();
-                } else {
-                    prevSlide();
+                // Only navigate if not scrollable or at scroll boundaries
+                if (!isScrollable || (isAtBottom || isAtTop)) {
+                    const rect = window.innerWidth;
+                    const clickX = e.clientX;
+                    
+                    if (clickX > rect / 2) {
+                        nextSlide();
+                    } else {
+                        prevSlide();
+                    }
                 }
             }
         });
         
-        // Enhanced touch/swipe support
+        // Enhanced touch/swipe support with scroll awareness
         let touchStartX = 0;
         let touchEndX = 0;
         let touchStartY = 0;
         let touchEndY = 0;
         let isSwiping = false;
+        let isScrolling = false;
         
         document.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
             isSwiping = true;
+            isScrolling = false;
         }, { passive: true });
         
         document.addEventListener('touchmove', (e) => {
@@ -1267,34 +1417,53 @@
             const deltaX = Math.abs(currentX - touchStartX);
             const deltaY = Math.abs(currentY - touchStartY);
             
-            // If vertical movement is greater, allow scrolling
-            if (deltaY > deltaX) {
+            // Determine if this is a vertical scroll or horizontal swipe
+            if (deltaY > deltaX && deltaY > 10) {
+                isScrolling = true;
                 isSwiping = false;
-            } else if (deltaX > 10) {
-                e.preventDefault();
+            } else if (deltaX > 30 && deltaX > deltaY) {
+                // This is a horizontal swipe, prevent default if needed
+                const activeSlide = document.querySelector('.slide.active');
+                const isScrollable = activeSlide.scrollHeight > activeSlide.clientHeight;
+                const isAtBottom = activeSlide.scrollTop + activeSlide.clientHeight >= activeSlide.scrollHeight - 10;
+                const isAtTop = activeSlide.scrollTop <= 10;
+                
+                // Only prevent scrolling if we can navigate
+                if (!isScrollable || isAtBottom || isAtTop) {
+                    e.preventDefault();
+                }
             }
         }, { passive: false });
         
         document.addEventListener('touchend', (e) => {
-            if (!isSwiping) return;
+            if (!isSwiping || isScrolling) return;
             
             touchEndX = e.changedTouches[0].screenX;
             touchEndY = e.changedTouches[0].screenY;
             handleSwipe();
             isSwiping = false;
+            isScrolling = false;
         }, { passive: true });
         
         function handleSwipe() {
             const deltaX = touchEndX - touchStartX;
             const deltaY = Math.abs(touchEndY - touchStartY);
-            const minSwipeDistance = 50;
+            const minSwipeDistance = 80; // Increased threshold
             
-            // Only process horizontal swipes
+            // Only process horizontal swipes that are longer than vertical movement
             if (Math.abs(deltaX) > minSwipeDistance && Math.abs(deltaX) > deltaY) {
-                if (deltaX < 0) {
-                    nextSlide();
-                } else {
-                    prevSlide();
+                const activeSlide = document.querySelector('.slide.active');
+                const isScrollable = activeSlide.scrollHeight > activeSlide.clientHeight;
+                const isAtBottom = activeSlide.scrollTop + activeSlide.clientHeight >= activeSlide.scrollHeight - 10;
+                const isAtTop = activeSlide.scrollTop <= 10;
+                
+                // Only navigate if not scrollable or at scroll boundaries
+                if (!isScrollable || isAtBottom || isAtTop) {
+                    if (deltaX < 0) {
+                        nextSlide();
+                    } else {
+                        prevSlide();
+                    }
                 }
             }
         }
@@ -1355,9 +1524,18 @@
             createProgressDots();
             addInteractiveEffects();
             addTimelineInteractions();
+            addScrollListeners();
             
             // Add loading animation
             document.body.classList.add('loading');
+            
+            // Check initial scroll state
+            setTimeout(() => {
+                const activeSlide = document.querySelector('.slide.active');
+                if (activeSlide) {
+                    checkScrollIndicator(activeSlide);
+                }
+            }, 500);
         });
         
         // Performance optimization: Reduce animations on low-end devices
